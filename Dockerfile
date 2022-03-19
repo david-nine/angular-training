@@ -1,13 +1,13 @@
-FROM node:17
-
-COPY . .
+FROM node:14
 
 WORKDIR /app
 
-VOLUME . /app
+COPY package.json package-lock.json ./
 
 RUN npm install
 
+COPY . .
+
 EXPOSE 4200
 
-CMD [ "npm", "start"]
+CMD [ "npm", "start" ]
