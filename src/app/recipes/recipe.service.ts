@@ -11,11 +11,11 @@ export class RecipeService {
 
   constructor() { }
 
-  public listRecipes(): Recipe[] {
+  public list(): Recipe[] {
     return this.recipes;
   }
 
-  public saveRecipe(recipe: Recipe) {
+  public save(recipe: Recipe) {
     this.recipes.push(recipe);
   }
 
