@@ -17,7 +17,7 @@ export class RecipeListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.recipes = this.recipeService.listRecipes();
+    this.recipes = this.recipeService.list();
   }
 
   onRecipeSelected(recipe: Recipe) {
