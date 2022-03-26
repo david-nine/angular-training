@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { Ingredient } from '../shared/ingredient.model';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ShoppingListService {
+
+  public ingredientAdded: EventEmitter<Ingredient[]> = new EventEmitter();
 
   private ingredients: Ingredient[] = [
     new Ingredient("Apples", 5),
@@ -14,10 +14,22 @@ export class ShoppingListService {
   constructor() { }
 
   public list():Ingredient[] {
-    return this.ingredients;
+    return this.ingredients.slice();
   }
 
   public save(ingredient: Ingredient) {
-    this.ingredients.push(ingredient);
+    let ingredientHasSameName: Ingredient[] = this.ingredients.filter(i => i.name.toLocaleLowerCase() === ingredient.name.toLocaleLowerCase());
+    if (ingredientHasSameName.length != 0) {
+      ingredientHasSameName[0].amount += Number(ingredient.amount);
+    } else {
+      this.ingredients.push(ingredient);
+    }
+    this.ingredientAdded.emit(this.ingredients.slice());
+  }
+
+  public saveAll(ingredients: Ingredient[]) {
+    ingredients.forEach(
+      (ingredient: Ingredient) => this.save(ingredient)
+    )
   }
 }
