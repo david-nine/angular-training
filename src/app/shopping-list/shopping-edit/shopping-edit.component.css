@@ -1,0 +1,5 @@
+.crud-butons {
+    display: flex;
+    justify-content: space-between !important;
+    flex-direction: row !important;
+}
