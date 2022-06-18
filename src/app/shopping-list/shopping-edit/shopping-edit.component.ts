@@ -1,5 +1,6 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs/Subscription';
 import { Ingredient } from 'src/app/shared/ingredient.model';
 import { ShoppingListService } from '../shopping-list.service';
 
@@ -8,9 +9,12 @@ import { ShoppingListService } from '../shopping-list.service';
   templateUrl: './shopping-edit.component.html',
   styleUrls: ['./shopping-edit.component.css']
 })
-export class ShoppingEditComponent implements OnInit {
+export class ShoppingEditComponent implements OnInit, OnDestroy {
 
   formGroup: FormGroup;
+  editMode = false;
+  editIndex: number;
+  subscription: Subscription;
   
   constructor(
     private shoppingListService: ShoppingListService,
@@ -20,12 +24,21 @@ export class ShoppingEditComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.subscription = this.shoppingListService.onEditIngredient.subscribe(index => {
+      this.editIndex = index;
+      this.formGroup.patchValue(this.shoppingListService.getIngredient(index));
+      this.editMode = true;
+    })
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   getFormGroup() {
     const formGroup = this.formBuilder.group({
       name: [null, Validators.compose([Validators.required])],
-      amount: [null, Validators.compose([Validators.required])]
+      amount: [null, Validators.compose([Validators.required, Validators.min(1)])]
     })
     return formGroup;
   }
@@ -36,8 +49,24 @@ export class ShoppingEditComponent implements OnInit {
       return;
     }
     const value = this.formGroup.value;
-    const newIngredient = new Ingredient(value.name, value.amount);
-    this.shoppingListService.save(newIngredient);
+    if (this.editMode) {
+      this.shoppingListService.update(this.editIndex, value.name, value.amount)
+      this.editMode = false;
+    } 
+    else {
+      const newIngredient = new Ingredient(value.name, value.amount);
+      this.shoppingListService.save(newIngredient);
+    }
+    this.formGroup.reset();
   }
 
+  onClear() {
+    this.editMode = false;
+    this.formGroup.reset();
+  }
+
+  onDelete() {
+    this.onClear();
+    this.shoppingListService.delete(this.editIndex);
+  }
 }

@@ -27,7 +27,8 @@
                         formControlName="amount">
                     <app-control-errors
                         [erros]="{
-                            required: 'This field is required'
+                            required: 'This field is required',
+                            min: 'Minimum quantity is 1'
                         }"
                         [control]="formGroup.controls['amount']"
                     ></app-control-errors>
@@ -35,9 +36,9 @@
             </div>
             <div class="row">
                 <div class="col-xs-12">
-                    <button class="btn btn-success" type="submit" style="margin-right: 1em;">Add</button>
-                    <button class="btn btn-danger" type="button" style="margin-right: 1em;">Delete</button>
-                    <button class="btn btn-primary" type="reset">Clear</button>
+                    <button class="btn btn-success" type="submit" style="margin-right: 1em;">{{ editMode ? 'Update' : 'Add' }}</button>
+                    <button *ngIf="editMode" class="btn btn-danger" type="button" style="margin-right: 1em;" (click)="onDelete()">Delete</button>
+                    <button class="btn btn-primary" type="reset" (click)="onClear()">Clear</button>
                 </div>
             </div>
         </form>

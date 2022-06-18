@@ -1,1 +1,1 @@
-<span *ngIf="!isValid && control.touched" style="color: red;">{{ message }}</span>
+<span *ngIf="!isValid && (control.touched || control.dirty)" style="color: red;">{{ message }}</span>
