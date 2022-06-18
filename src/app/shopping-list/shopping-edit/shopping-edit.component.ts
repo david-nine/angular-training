@@ -1,4 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Ingredient } from 'src/app/shared/ingredient.model';
 import { ShoppingListService } from '../shopping-list.service';
 
@@ -8,21 +9,35 @@ import { ShoppingListService } from '../shopping-list.service';
   styleUrls: ['./shopping-edit.component.css']
 })
 export class ShoppingEditComponent implements OnInit {
-  @ViewChild('nameInput') nameInputRef: ElementRef | any;
-  @ViewChild('amountInput') amountInputRef: ElementRef | any;
+
+  formGroup: FormGroup;
   
-  constructor(private shoppingListService: ShoppingListService) { }
+  constructor(
+    private shoppingListService: ShoppingListService,
+    private formBuilder: FormBuilder
+  ) {
+    this.formGroup = this.getFormGroup();
+  }
 
   ngOnInit(): void {
   }
 
-  onAddItem() {
-    const ingredientName = this.nameInputRef.nativeElement.value;
-    const ingredientAmount = this.amountInputRef.nativeElement.value;
-    if (ingredientName && ingredientAmount) {
-      const newIngredient = new Ingredient(ingredientName, ingredientAmount);
-      this.shoppingListService.save(newIngredient);
+  getFormGroup() {
+    const formGroup = this.formBuilder.group({
+      name: [null, Validators.compose([Validators.required])],
+      amount: [null, Validators.compose([Validators.required])]
+    })
+    return formGroup;
+  }
+
+  onSave() {
+    if (!this.formGroup.valid) {
+      this.formGroup.markAllAsTouched()
+      return;
     }
+    const value = this.formGroup.value;
+    const newIngredient = new Ingredient(value.name, value.amount);
+    this.shoppingListService.save(newIngredient);
   }
 
 }

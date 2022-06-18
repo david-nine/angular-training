@@ -3,3 +3,7 @@
     justify-content: space-between !important;
     flex-direction: row !important;
 }
+
+input.ng-invalid.ng-touched {
+    border: 1px solid red;
+}
