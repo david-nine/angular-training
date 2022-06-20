@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-xs-12">
-        <form>
+        <form [formGroup]="formGroup" (ngSubmit)="onSave()">
             <div class="row">
                 <div class="col-xs-12">
                     <button type="submit" class="btn btn-success">Save</button>
@@ -11,7 +11,16 @@
                 <div class="col-xs-12">
                     <div class="form-group">
                         <label for="name">Name</label>
-                        <input type="text" id="name" class="form-control">
+                        <input type="text" 
+                            id="name" 
+                            class="form-control"
+                            formControlName="name">
+                        <app-control-errors
+                            [erros]="{
+                                required: 'This field is required'
+                            }"
+                            [control]="formGroup.controls['name']"
+                        ></app-control-errors>
                     </div>
                 </div>
             </div>
@@ -19,13 +28,16 @@
                 <div class="col-xs-12">
                     <div class="form-group">
                         <label for="imagePath">Image URL</label>
-                        <input type="text" id="imagePath" class="form-control">
+                        <input type="text" 
+                            id="imagePath" 
+                            class="form-control"
+                            formControlName="imagePath">
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-xs-12">
-                    <img src="" alt="photo" class="img-responsive">
+                    <img src="{{ formGroup.value.imagePath }}" alt="photo" class="img-responsive">
                 </div>
             </div>
             <div class="row">
@@ -37,23 +49,44 @@
                             id="description" 
                             rows="6"
                             class="form-control"
+                            formControlName="description"
                         ></textarea>
+                        <app-control-errors
+                            [erros]="{
+                                required: 'This field is required'
+                            }"
+                            [control]="formGroup.controls['description']"
+                        ></app-control-errors>
                     </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col-xs-12">
-                    <div class="row">
+                <div class="col-xs-12" formArrayName="ingredients">
+                    <div class="row" 
+                        *ngFor="let ingredientControl of ingredientsForm.controls; let i = index"
+                        [formGroupName]="i"
+                        style="margin-top: 10px">
                         <div class="col-xs-8">
-                            <input type="text" class="form-control">
+                            <input type="text" 
+                                class="form-control"
+                                formControlName="name">
                         </div>
                         <div class="col-xs-2">
-                            <input type="number" class="form-control">
+                            <input type="number" 
+                                class="form-control"
+                                formControlName="amount">
                         </div>
                         <div class="col-xs-2">
                             <button class="btn btn-danger">X</button>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="row" style="margin-top : 10px;">
+                <div class="col-xs-12">
+                    <button type="button" 
+                        (click)="onAddIngredient()" 
+                        class="btn btn-success">Add ingredient</button>
                 </div>
             </div>
         </form>
