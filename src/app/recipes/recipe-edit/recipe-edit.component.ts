@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Recipe } from '../recipe.model';
 import { RecipeService } from '../recipe.service';
 
 @Component({
@@ -17,12 +18,13 @@ export class RecipeEditComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private formBuilder: FormBuilder,
-    private recipeService: RecipeService
+    private recipeService: RecipeService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
+    this.formGroup = this.getFormGroup();
     this.route.params.subscribe((params: Params) => {
-      this.formGroup = this.getFormGroup();
       this.id = params['id'];
       this.editMode = this.id != null;
       if (this.editMode) {
@@ -45,6 +47,7 @@ export class RecipeEditComponent implements OnInit {
 
   getFormGroup() {
     const formGroup = this.formBuilder.group({
+      'id': [null],
       'name': [null, Validators.compose([Validators.required])],
       'imagePath': [null, Validators.compose([])],
       'description': [null, Validators.compose([Validators.required])],
@@ -58,13 +61,36 @@ export class RecipeEditComponent implements OnInit {
   }
 
   createIngredientForm(): FormGroup {
-    return this.formBuilder.group({
+    const ingredientForm = this.formBuilder.group({
       name: [null, Validators.compose([Validators.required])],
       amount: [null, Validators.compose([Validators.required, Validators.min(1)])]
-    })
+    });
+
+    ingredientForm.markAsPristine()
+
+    return ingredientForm;
   }
 
-  onSave() {
-    this.formGroup.markAllAsTouched();
+  onSubmit() {
+    if (!this.formGroup.valid) {
+      this.formGroup.markAllAsTouched();
+      return;
+    }
+  
+    if (this.editMode) {
+      this.recipeService.update(this.id, this.formGroup.value);
+    } else {
+      this.recipeService.addRecipe(this.formGroup.value);
+    }
+
+    this.onCancel()
+  }
+
+  onRemoveIngredient(index: number) {
+    this.ingredientsForm.removeAt(index);
+  }
+
+  onCancel() {
+    this.router.navigate([ '../' ], { relativeTo: this.route })
   }
 }
