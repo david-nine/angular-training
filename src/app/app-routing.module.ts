@@ -7,6 +7,8 @@ import { RecipeStartComponent } from './recipes/recipe-start/recipe-start.compon
 import { RecipeEditComponent } from './recipes/recipe-edit/recipe-edit.component';
 import { RecipesResolverService } from './recipes/recipes-resolver.service';
 import { ShoppingListResolverService } from './shopping-list/shopping-list-resolver.service';
+import { AuthComponent } from './auth/auth/auth.component';
+import { RouteNotFoundComponent } from './shared/route-not-found/route-not-found.component';
 
 const routes: Routes = [
   {
@@ -41,6 +43,18 @@ const routes: Routes = [
     path: 'shopping-list',
     component: ShoppingListComponent,
     resolve: [ShoppingListResolverService]
+  },
+  {
+    path: 'auth',
+    component: AuthComponent
+  },
+  {
+    path: 'not-found',
+    component: RouteNotFoundComponent
+  },
+  {
+    path: '**',
+    redirectTo: 'not-found'
   }
 ];
 

@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -19,6 +19,9 @@ import { ControlErrorsComponent } from './shared/control-errors/control-errors.c
 import { RecipeService } from './recipes/recipe.service';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { URLInterceptorService } from './config/url-interceptor.service';
+import { AuthComponent } from './auth/auth/auth.component';
+import { RouteNotFoundComponent } from './shared/route-not-found/route-not-found.component';
+import { LoadingSpinerComponent } from './shared/loading-spiner/loading-spiner.component';
 
 @NgModule({
   declarations: [
@@ -33,13 +36,17 @@ import { URLInterceptorService } from './config/url-interceptor.service';
     DropdownDirective,
     RecipeStartComponent,
     RecipeEditComponent,
-    ControlErrorsComponent
+    ControlErrorsComponent,
+    AuthComponent,
+    RouteNotFoundComponent,
+    LoadingSpinerComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
   ],
   providers: [
     {
