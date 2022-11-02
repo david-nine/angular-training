@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { Recipe } from '../recipe.model';
 import { RecipeService } from '../recipe.service';
 
 @Component({
@@ -49,7 +48,7 @@ export class RecipeEditComponent implements OnInit {
     const formGroup = this.formBuilder.group({
       'id': [null],
       'name': [null, Validators.compose([Validators.required])],
-      'imagePath': [null, Validators.compose([])],
+      'imagePath': [null, Validators.compose([Validators.required])],
       'description': [null, Validators.compose([Validators.required])],
       'ingredients': this.formBuilder.array([])
     })

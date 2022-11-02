@@ -8,14 +8,11 @@ export class ShoppingListService {
   public ingredientsChanged: Subject<Ingredient[]> = new Subject();
   public onEditIngredient: Subject<number> = new Subject();
 
-  private ingredients: Ingredient[] = [
-    new Ingredient("Apples", 5),
-    new Ingredient("Tomatoes", 8)
-  ];
+  private ingredients: Ingredient[] = [];
 
   constructor() { }
 
-  public list():Ingredient[] {
+  public list(): Ingredient[] {
     return this.ingredients.slice();
   }
 
@@ -53,6 +50,11 @@ export class ShoppingListService {
 
   delete(index: number) {
     this.ingredients.splice(index, 1);
+    this.ingredientsChanged.next(this.ingredients.slice());
+  }
+
+  fetch(ingredients: Ingredient[]): void {
+    this.ingredients = ingredients;
     this.ingredientsChanged.next(this.ingredients.slice());
   }
 }
