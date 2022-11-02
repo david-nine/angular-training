@@ -16,8 +16,8 @@
                 <li class="dropdown" appDropdown>
                     <a class="dropdown-toggle cursor-pointer" role="button">Manage <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a class="cursor-pointer">Save Data</a></li>
-                        <li><a class="cursor-pointer">Fetch Data</a></li>
+                        <li (click)="onSaveData()"><a class="cursor-pointer">Save Data</a></li>
+                        <li (click)="onFetchData()"><a class="cursor-pointer">Fetch Data</a></li>
                     </ul>
                 </li>
             </ul>

@@ -17,6 +17,8 @@ import { RecipeStartComponent } from './recipes/recipe-start/recipe-start.compon
 import { RecipeEditComponent } from './recipes/recipe-edit/recipe-edit.component'
 import { ControlErrorsComponent } from './shared/control-errors/control-errors.component';
 import { RecipeService } from './recipes/recipe.service';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { URLInterceptorService } from './config/url-interceptor.service';
 
 @NgModule({
   declarations: [
@@ -36,9 +38,15 @@ import { RecipeService } from './recipes/recipe.service';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    HttpClientModule
   ],
   providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: URLInterceptorService,
+      multi: true
+    },
     ShoppingListService,
     RecipeService
   ],
