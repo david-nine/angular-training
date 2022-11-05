@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
 import { throwError, Observable } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 import { AuthResponseData, AuthService } from './auth.service';
@@ -16,7 +17,8 @@ export class AuthComponent implements OnInit {
   error: string | null = null;
 
   constructor(
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -49,7 +51,7 @@ export class AuthComponent implements OnInit {
       }),
       finalize(() => this.isLoading = false)
     ).subscribe(responseData => {
-      console.log(responseData);
+      this.router.navigate(['/recipes'])
     });
     form.reset();
   }

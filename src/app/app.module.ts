@@ -22,6 +22,7 @@ import { URLInterceptorService } from './config/url-interceptor.service';
 import { AuthComponent } from './auth/auth/auth.component';
 import { RouteNotFoundComponent } from './shared/route-not-found/route-not-found.component';
 import { LoadingSpinerComponent } from './shared/loading-spiner/loading-spiner.component';
+import { AuthInterceptorService } from './config/auth-interceptor.service';
 
 @NgModule({
   declarations: [
@@ -52,6 +53,11 @@ import { LoadingSpinerComponent } from './shared/loading-spiner/loading-spiner.c
     {
       provide: HTTP_INTERCEPTORS,
       useClass: URLInterceptorService,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptorService,
       multi: true
     },
     ShoppingListService,

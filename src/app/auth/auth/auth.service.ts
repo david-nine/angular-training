@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable, throwError, Subject } from "rxjs";
+import { BehaviorSubject, Observable, throwError } from "rxjs";
 import { catchError, tap } from "rxjs/operators";
 
 import { EXTERNAL_URL } from "src/app/config/url-interceptor.service";
@@ -18,7 +18,7 @@ export interface AuthResponseData {
 @Injectable({ providedIn: "root" })
 export class AuthService {
 
-    user = new Subject<User>();
+    user = new BehaviorSubject<User | null>(null);
 
     constructor(
         private http: HttpClient
