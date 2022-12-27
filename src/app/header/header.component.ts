@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output, OnInit, OnDestroy } from "@angular/core";
-import { AuthService } from "../auth/auth/auth.service";
+import { AuthService } from "../auth/auth.service";
 import { DataStorageService } from "../shared/data-storage.service";
 import { Subscription } from "rxjs";
 
@@ -19,14 +19,14 @@ export class HeaderComponent implements OnInit, OnDestroy {
         private dataStorageService: DataStorageService,
         private authService: AuthService
     ) { }
-    
+
     ngOnInit(): void {
         this.isAuthenticated = !!this.authService.user.getValue();
         this.userSub = this.authService.user.subscribe(user => {
             this.isAuthenticated = !!user;
         });
     }
-    
+
     ngOnDestroy(): void {
         this.userSub.unsubscribe();
     }
@@ -44,4 +44,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.dataStorageService.fetchShoppingList().subscribe();
     }
 
+  onLogout() {
+    this.authService.logout();
+  }
 }
