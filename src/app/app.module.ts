@@ -24,6 +24,7 @@ import {RouteNotFoundComponent} from './shared/route-not-found/route-not-found.c
 import {LoadingSpinerComponent} from './shared/loading-spiner/loading-spiner.component';
 import {AuthInterceptorService} from './config/auth-interceptor.service';
 import {AlertComponent} from "./shared/alert/alert.component";
+import { PlaceholderDirective } from './shared/placeholder/placeholder.directive';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import {AlertComponent} from "./shared/alert/alert.component";
     AuthComponent,
     RouteNotFoundComponent,
     LoadingSpinerComponent,
-    AlertComponent
+    AlertComponent,
+    PlaceholderDirective
   ],
   imports: [
     BrowserModule,
