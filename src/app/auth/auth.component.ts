@@ -1,9 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ComponentFactoryResolver, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {Router} from '@angular/router';
 import {Observable, throwError} from 'rxjs';
-import {catchError} from 'rxjs/operators';
+import {catchError, take} from 'rxjs/operators';
 import {AuthResponseData, AuthService} from './auth.service';
+import {AlertComponent} from "../shared/alert/alert.component";
+import {PlaceholderDirective} from "../shared/placeholder/placeholder.directive";
 
 @Component({
   selector: 'app-auth',
@@ -16,13 +18,17 @@ export class AuthComponent implements OnInit {
   isLoading = false;
   error: string | null = null;
 
-  constructor(
-    private authService: AuthService,
-    private router: Router
-  ) {
-  }
+  @ViewChild(PlaceholderDirective)
+  alertHost: PlaceholderDirective;
 
   ngOnInit(): void {
+  }
+
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private componentFactoryResolver: ComponentFactoryResolver
+  ) {
   }
 
   onSwitchMode() {
@@ -48,9 +54,7 @@ export class AuthComponent implements OnInit {
     observable.pipe(
       catchError(error => {
         this.error = error;
-        return throwError(error);
-      }),
-      catchError(error => {
+        this.onShowAlertError(error);
         this.isLoading = false;
         return throwError(error);
       })
@@ -62,5 +66,17 @@ export class AuthComponent implements OnInit {
 
   onHandleError() {
     this.error = null;
+  }
+
+  onShowAlertError(error: string) {
+    const alertCpmFactory = this.componentFactoryResolver.resolveComponentFactory(AlertComponent);
+    const hostViewContainerRef = this.alertHost.viewContainerRef;
+    hostViewContainerRef.clear();
+
+    const componentRef = hostViewContainerRef.createComponent(alertCpmFactory);
+    componentRef.instance.message = error;
+    componentRef.instance.close.pipe(
+      take(1)
+    ).subscribe(() => hostViewContainerRef.clear());
   }
 }
