@@ -6,10 +6,13 @@ import {RouteNotFoundComponent} from "./route-not-found/route-not-found.componen
 import {PlaceholderDirective} from "./placeholder/placeholder.directive";
 import {LoadingSpinnerComponent} from "./loading-spiner/loading-spinner.component";
 import {AlertComponent} from "./alert/alert.component";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule
   ],
   exports: [
     ControlErrorsComponent,
@@ -17,7 +20,10 @@ import {AlertComponent} from "./alert/alert.component";
     RouteNotFoundComponent,
     PlaceholderDirective,
     LoadingSpinnerComponent,
-    AlertComponent
+    AlertComponent,
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule
   ],
   declarations: [
     ControlErrorsComponent,
