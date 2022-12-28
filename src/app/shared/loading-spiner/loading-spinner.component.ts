@@ -11,9 +11,9 @@ import { Component, OnInit } from '@angular/core';
         <div></div>
       </div>
     </div>`,
-  styleUrls: ['./loading-spiner.component.css']
+  styleUrls: ['./loading-spinner.component.css']
 })
-export class LoadingSpinerComponent implements OnInit {
+export class LoadingSpinnerComponent implements OnInit {
 
   constructor() { }
 
