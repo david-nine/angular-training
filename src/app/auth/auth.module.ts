@@ -9,7 +9,7 @@ import {AuthRoutingGuard} from "./auth-routing-guard";
   imports: [
     SharedModule,
     RouterModule.forChild([{
-      path: 'auth',
+      path: '',
       component: AuthComponent,
       canActivate: [AuthRoutingGuard]
     }])

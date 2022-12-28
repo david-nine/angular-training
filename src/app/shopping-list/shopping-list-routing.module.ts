@@ -6,7 +6,7 @@ import {ShoppingListResolverService} from "./shopping-list-resolver.service";
 
 const routes: Routes = [
   {
-    path: 'shopping-list',
+    path: '',
     component: ShoppingListComponent,
     canActivate: [AuthGuard],
     resolve: [ShoppingListResolverService]
