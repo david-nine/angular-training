@@ -7,7 +7,7 @@ import {AppComponent} from './app.component';
 import {HeaderComponent} from './header/header.component';
 import {CoreModule} from "./core.module";
 import {SharedModule} from "./shared/shared.module";
-import {StoreModule} from "@ngrx/store";
+//import {StoreModule} from "@ngrx/store";
 
 @NgModule({
   declarations: [
@@ -19,7 +19,7 @@ import {StoreModule} from "@ngrx/store";
     HttpClientModule,
     CoreModule,
     SharedModule,
-    StoreModule,
+    //StoreModule,
     AppRoutingModule
   ],
   bootstrap: [AppComponent]
