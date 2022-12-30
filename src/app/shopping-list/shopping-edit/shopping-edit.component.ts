@@ -1,8 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs/Subscription';
-import { Ingredient } from 'src/app/shared/ingredient.model';
-import { ShoppingListService } from '../shopping-list.service';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
+import {Subscription} from 'rxjs/Subscription';
+import {Store} from "@ngrx/store";
+
+import {Ingredient} from 'src/app/shared/ingredient.model';
+import {ShoppingListService} from '../shopping-list.service';
+import * as ShoppingListActions from "../store/shopping-list.actions";
 
 @Component({
   selector: 'app-shopping-edit',
@@ -15,10 +18,11 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
   editMode = false;
   editIndex: number;
   subscription: Subscription;
-  
+
   constructor(
     private shoppingListService: ShoppingListService,
-    private formBuilder: UntypedFormBuilder
+    private formBuilder: UntypedFormBuilder,
+    private store: Store<{shoppingList: { ingredients: Ingredient[]}}>
   ) {
     this.formGroup = this.getFormGroup();
   }
@@ -36,11 +40,10 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
   }
 
   getFormGroup() {
-    const formGroup = this.formBuilder.group({
+    return this.formBuilder.group({
       name: [null, Validators.compose([Validators.required])],
       amount: [null, Validators.compose([Validators.required, Validators.min(1)])]
-    })
-    return formGroup;
+    });
   }
 
   onSave() {
@@ -52,10 +55,11 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
     if (this.editMode) {
       this.shoppingListService.update(this.editIndex, value.name, value.amount)
       this.editMode = false;
-    } 
+    }
     else {
       const newIngredient = new Ingredient(value.name, value.amount);
-      this.shoppingListService.save(newIngredient);
+      //this.shoppingListService.save(newIngredient);
+      this.store.dispatch(new ShoppingListActions.AddIngredient(newIngredient));
     }
     this.formGroup.reset();
   }

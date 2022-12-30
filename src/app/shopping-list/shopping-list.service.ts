@@ -1,6 +1,8 @@
-import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
-import { Ingredient } from '../shared/ingredient.model';
+import {Injectable} from '@angular/core';
+import {Subject} from 'rxjs';
+import {Ingredient} from '../shared/ingredient.model';
+import * as ShoppingListActions from "./store/shopping-list.actions";
+import {Store} from "@ngrx/store";
 
 @Injectable()
 export class ShoppingListService {
@@ -10,7 +12,10 @@ export class ShoppingListService {
 
   private ingredients: Ingredient[] = [];
 
-  constructor() { }
+  constructor(
+    private store: Store<{ shoppingList: { ingredients: Ingredient[] } }>
+  ) {
+  }
 
   public list(): Ingredient[] {
     return this.ingredients.slice();
@@ -36,16 +41,19 @@ export class ShoppingListService {
   }
 
   public saveAll(ingredients: Ingredient[]) {
-    ingredients.forEach(
-      (ingredient: Ingredient) => this.save(ingredient)
-    )
+    this.store.dispatch(new ShoppingListActions.AddIngredients(ingredients));
+    //ingredients.forEach(
+    // (ingredient: Ingredient) => this.save(ingredient)
+    //
   }
 
   update(index: number, name: any, amount: any) {
-    const ingredient = this.ingredients[index];
-    ingredient.amount = amount;
-    ingredient.name = name;
-    this.ingredientsChanged.next(this.ingredients.slice())
+    const ingredient = new Ingredient(amount, name);
+    this.store.dispatch(new ShoppingListActions.UpdateIngredient({index: index, ingredient: ingredient}))
+    // const ingredient = this.ingredients[index];
+    // ingredient.amount = amount;
+    // ingredient.name = name;
+    // this.ingredientsChanged.next(this.ingredients.slice())
   }
 
   delete(index: number) {
