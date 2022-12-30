@@ -16,17 +16,3 @@ export class Recipe {
     this.ingredients = ingredients;
   }
 }
-
-export interface IRecipe {
-
-  id: number;
-  name: string;
-  description: string;
-  imagePath: string;
-  ingredients: IIngredient[];
-}
-
-export interface IIngredient {
-  name: string;
-  amount: number;
-}

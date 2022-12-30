@@ -21,20 +21,20 @@ export class ShoppingListService {
     return this.ingredients.slice();
   }
 
-  public save(ingredient: Ingredient) {
-    let ingredientHasSameName = this.getIngredientByName(ingredient.name);
-    if (ingredientHasSameName != null) {
-      ingredientHasSameName.amount += Number(ingredient.amount);
-    } else {
-      this.ingredients.push(ingredient);
-    }
-    this.ingredientsChanged.next(this.ingredients.slice());
-  }
+   // public save(ingredient: Ingredient) {
+   //   let ingredientHasSameName = this.getIngredientByName(ingredient.name);
+   //   if (ingredientHasSameName != null) {
+   //     ingredientHasSameName.amount += Number(ingredient.amount);
+   //   } else {
+   //     this.ingredients.push(ingredient);
+   //   }
+   //   this.ingredientsChanged.next(this.ingredients.slice());
+   // }
 
-  private getIngredientByName(name: string) {
-    const ingredient = this.ingredients.filter(i => i.name.toLocaleLowerCase() === name.toLocaleLowerCase());
-    return ingredient.length != 0 ? ingredient[0] : null;
-  }
+   // private getIngredientByName(name: string) {
+   //   const ingredient = this.ingredients.filter(i => i.name.toLocaleLowerCase() === name.toLocaleLowerCase());
+   //   return ingredient.length != 0 ? ingredient[0] : null;
+   // }
 
   public getIngredient(index: number): Ingredient {
     return this.ingredients.slice()[index];
@@ -49,7 +49,7 @@ export class ShoppingListService {
 
   update(index: number, name: any, amount: any) {
     const ingredient = new Ingredient(amount, name);
-    this.store.dispatch(new ShoppingListActions.UpdateIngredient({index: index, ingredient: ingredient}))
+    this.store.dispatch(new ShoppingListActions.UpdateIngredient({index: index, ingredient: ingredient}));
     // const ingredient = this.ingredients[index];
     // ingredient.amount = amount;
     // ingredient.name = name;
@@ -57,8 +57,9 @@ export class ShoppingListService {
   }
 
   delete(index: number) {
-    this.ingredients.splice(index, 1);
-    this.ingredientsChanged.next(this.ingredients.slice());
+    this.store.dispatch(new ShoppingListActions.DeleteIngredient(index));
+    // this.ingredients.splice(index, 1);
+    // this.ingredientsChanged.next(this.ingredients.slice());
   }
 
   fetch(ingredients: Ingredient[]): void {

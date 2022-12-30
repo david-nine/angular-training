@@ -22,7 +22,7 @@ function reduceShoppingList(state: { ingredients: Ingredient[] }, action: Shoppi
     case ShoppingListActions.ADD_INGREDIENTS:
       let newIngredients = [...state.ingredients];
       for (let i = 0; i < action.payload.length; i++) {
-        newIngredients = saveOrUpdate(action.payload[i], newIngredients);
+        newIngredients = saveOrUpdate({...action.payload[i]}, newIngredients);
       }
       return {
         ...state,
@@ -47,21 +47,22 @@ function reduceShoppingList(state: { ingredients: Ingredient[] }, action: Shoppi
         ingredients: state.ingredients.filter((value, index) => index !== action.payload)
       };
     default:
-      return  state;
+      return state;
   }
 }
 
 function saveOrUpdate(ingredient: Ingredient, ingredients: Ingredient[]) {
-  let ingredientHasSameName = getIngredientByName(ingredients, ingredient.name);
-  if (ingredientHasSameName != null) {
-    ingredientHasSameName.amount += Number(ingredient.amount);
+  let index = getIndexOfIngredientByName(ingredients, ingredient.name);
+  if (index != null) {
+    ingredients[index] = new Ingredient(ingredients[index].name,
+      ingredients[index].amount + ingredient.amount);
   } else {
     ingredients.push(ingredient);
   }
   return ingredients;
 }
 
-function getIngredientByName(ingredients: Ingredient[], name: string) {
+function getIndexOfIngredientByName(ingredients: Ingredient[], name: string) {
   const ingredient = ingredients.filter(i => i.name.toLocaleLowerCase() === name.toLocaleLowerCase());
-  return ingredient.length != 0 ? ingredient[0] : null;
+  return ingredient[0] ? ingredients.indexOf(ingredient[0]) : null;
 }

@@ -4,6 +4,7 @@ import {ActivatedRoute, Params, Router} from '@angular/router';
 import {ShoppingListService} from 'src/app/shopping-list/shopping-list.service';
 import {Recipe} from '../recipe.model';
 import {RecipeService} from '../recipe.service';
+import {Ingredient} from "../../shared/ingredient.model";
 
 @Component({
   selector: 'app-recipe-detail',
@@ -28,7 +29,8 @@ export class RecipeDetailComponent implements OnInit {
   }
 
   onAddToShoppingList() {
-    this.shoppingListService.saveAll(this.recipe.ingredients);
+    this.shoppingListService.saveAll(this.recipe.ingredients
+      .map((ingredient: Ingredient) => new Ingredient(ingredient.name, ingredient.amount)));
   }
 
   onEditRecipe() {
