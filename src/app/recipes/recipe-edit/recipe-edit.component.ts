@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Params, Router } from '@angular/router';
-import { RecipeService } from '../recipe.service';
+import {Component, OnInit} from '@angular/core';
+import {FormArray, FormControl, FormGroup, UntypedFormBuilder, Validators} from '@angular/forms';
+import {ActivatedRoute, Params, Router} from '@angular/router';
+import {RecipeService} from '../recipe.service';
+import {Recipe} from "../recipe.model";
 
 @Component({
   selector: 'app-recipe-edit',
@@ -12,14 +13,15 @@ export class RecipeEditComponent implements OnInit {
 
   id: number | any;
   editMode: boolean = false;
-  formGroup: FormGroup;
+  formGroup: FormGroup<RecipeForm>;
 
   constructor(
     private route: ActivatedRoute,
-    private formBuilder: FormBuilder,
+    private formBuilder: UntypedFormBuilder,
     private recipeService: RecipeService,
     private router: Router
-  ) { }
+  ) {
+  }
 
   ngOnInit(): void {
     this.formGroup = this.getFormGroup();
@@ -40,26 +42,25 @@ export class RecipeEditComponent implements OnInit {
     })
   }
 
-  get ingredientsForm(): FormArray {
-    return this.formGroup.controls['ingredients'] as FormArray;
+  get ingredientsForm(): FormArray<FormGroup<IngredientForm>> {
+    return this.formGroup.controls['ingredients'] as FormArray<FormGroup<IngredientForm>>;
   }
 
   getFormGroup() {
-    const formGroup = this.formBuilder.group({
+    return this.formBuilder.group({
       'id': [null],
       'name': [null, Validators.compose([Validators.required])],
       'imagePath': [null, Validators.compose([Validators.required])],
       'description': [null, Validators.compose([Validators.required])],
       'ingredients': this.formBuilder.array([])
-    })
-    return formGroup;
+    });
   }
-  
+
   onAddIngredient() {
     this.ingredientsForm.push(this.createIngredientForm());
   }
 
-  createIngredientForm(): FormGroup {
+  createIngredientForm(): FormGroup<IngredientForm> {
     const ingredientForm = this.formBuilder.group({
       name: [null, Validators.compose([Validators.required])],
       amount: [null, Validators.compose([Validators.required, Validators.min(1)])]
@@ -75,11 +76,11 @@ export class RecipeEditComponent implements OnInit {
       this.formGroup.markAllAsTouched();
       return;
     }
-  
+
     if (this.editMode) {
-      this.recipeService.update(this.id, this.formGroup.value);
+      this.recipeService.update(this.id, this.formGroup.value as Recipe);
     } else {
-      this.recipeService.addRecipe(this.formGroup.value);
+      this.recipeService.addRecipe(this.formGroup.value as Recipe);
     }
 
     this.onCancel()
@@ -90,6 +91,19 @@ export class RecipeEditComponent implements OnInit {
   }
 
   onCancel() {
-    this.router.navigate([ '../' ], { relativeTo: this.route })
+    this.router.navigate(['../'], {relativeTo: this.route})
   }
+}
+
+interface IngredientForm {
+  name: FormControl<string>;
+  amount: FormControl<number>;
+}
+
+interface RecipeForm {
+  id: FormControl<number>;
+  name: FormControl<string>;
+  imagePath: FormControl<string>;
+  description: FormControl<string>;
+  ingredients: FormArray<FormGroup<IngredientForm>>;
 }

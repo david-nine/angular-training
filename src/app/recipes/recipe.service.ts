@@ -16,10 +16,6 @@ export class RecipeService {
     return this.recipes.slice();
   }
 
-  public save(recipe: Recipe) {
-    this.recipes.push(recipe);
-  }
-
   public get(id: number): Recipe {
     return this.recipes.slice().find((recipe: Recipe) => recipe.id == id) as Recipe;
   }
@@ -49,7 +45,7 @@ export class RecipeService {
   private getLastId(): number {
     let id = 0;
     for (let recipe of this.recipes) {
-      if (recipe.id > id) {
+      if (recipe.id && recipe.id > id) {
         id = recipe.id;
       }
     }

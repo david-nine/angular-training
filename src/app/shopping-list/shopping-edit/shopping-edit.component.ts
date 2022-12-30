@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
 import { Ingredient } from 'src/app/shared/ingredient.model';
 import { ShoppingListService } from '../shopping-list.service';
@@ -11,14 +11,14 @@ import { ShoppingListService } from '../shopping-list.service';
 })
 export class ShoppingEditComponent implements OnInit, OnDestroy {
 
-  formGroup: FormGroup;
+  formGroup: UntypedFormGroup;
   editMode = false;
   editIndex: number;
   subscription: Subscription;
   
   constructor(
     private shoppingListService: ShoppingListService,
-    private formBuilder: FormBuilder
+    private formBuilder: UntypedFormBuilder
   ) {
     this.formGroup = this.getFormGroup();
   }
