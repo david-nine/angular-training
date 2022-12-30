@@ -8,7 +8,7 @@ const initialState = {
   ]
 }
 
-export function shoppingListReducer(state: any = initialState, action: ShoppingListActions.AddIngredient) {
+export function shoppingListReducer(state: any = initialState, action: any) {
   switch (action.type) {
     case ShoppingListActions.ADD_INGREDIENT:
       return {
