@@ -52,12 +52,13 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
       return;
     }
     const value = this.formGroup.value;
+      const newIngredient = new Ingredient(value.name, value.amount);
     if (this.editMode) {
-      this.shoppingListService.update(this.editIndex, value.name, value.amount)
+      this.store.dispatch(new ShoppingListActions.UpdateIngredient({index: this.editIndex, ingredient: newIngredient}));
+      //this.shoppingListService.update(this.editIndex, value.name, value.amount)
       this.editMode = false;
     }
     else {
-      const newIngredient = new Ingredient(value.name, value.amount);
       //this.shoppingListService.save(newIngredient);
       this.store.dispatch(new ShoppingListActions.AddIngredient(newIngredient));
     }
