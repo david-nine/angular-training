@@ -36,7 +36,7 @@ export class DataStorageService {
   }
 
   fetchRecipes(): Observable<Recipe[]> {
-    return this.authService.user.pipe(
+    return this.store.select('auth').pipe(
       take(1),
       exhaustMap(() => {
         return this.http.get<{ [key: string]: Recipe }>(this.RECIPES_URL)
