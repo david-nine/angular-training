@@ -2,12 +2,13 @@ import {HttpClient} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {exhaustMap, map, take, tap} from "rxjs/operators";
 import {Observable} from "rxjs";
+import {Store} from "@ngrx/store";
 
 import {Recipe} from "../recipes/recipe.model";
 import {RecipeService} from "../recipes/recipe.service";
-import {ShoppingListService} from "../shopping-list/shopping-list.service";
 import {Ingredient} from "./ingredient.model";
 import {AuthService} from "../auth/auth.service";
+import * as fromApp from "../store/app.reducer";
 
 @Injectable({providedIn: 'root'})
 export class DataStorageService {
@@ -18,20 +19,26 @@ export class DataStorageService {
   constructor(
     private http: HttpClient,
     private recipesService: RecipeService,
-    private shoppingListService: ShoppingListService,
-    private authService: AuthService
+    private authService: AuthService,
+    private store: Store<fromApp.AppState>
   ) {
   }
 
   storeData() {
     this.http.put(this.RECIPES_URL, this.recipesService.list()).subscribe();
-    this.http.put(this.SHOPPING_LIST_URL, this.shoppingListService.list()).subscribe();
+    this.store.select('shoppingList').pipe(
+      take(1),
+      map(state => state.ingredients)
+    ).subscribe(ingredients => this.http.put(
+      this.SHOPPING_LIST_URL,
+      ingredients
+    ).subscribe());
   }
 
   fetchRecipes(): Observable<Recipe[]> {
     return this.authService.user.pipe(
       take(1),
-      exhaustMap(user => {
+      exhaustMap(() => {
         return this.http.get<{ [key: string]: Recipe }>(this.RECIPES_URL)
       }),
       map(responseData => {
@@ -48,7 +55,6 @@ export class DataStorageService {
     return this.http.get<{ [key: string]: Ingredient }>(this.SHOPPING_LIST_URL)
       .pipe(
         map(responseData => this.mapFirebaseResponse(responseData)),
-        tap(recipes => this.shoppingListService.fetch(recipes))
       );
   }
 

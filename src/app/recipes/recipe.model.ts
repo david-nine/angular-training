@@ -1,4 +1,5 @@
-import {Ingredient} from "../shared/ingredient.model";
+import {Ingredient, IngredientForm} from "../shared/ingredient.model";
+import {FormArray, FormControl, FormGroup} from "@angular/forms";
 
 export class Recipe {
 
@@ -15,4 +16,12 @@ export class Recipe {
     this.imagePath = imagePath;
     this.ingredients = ingredients;
   }
+}
+
+export interface RecipeForm {
+  id: FormControl<number>;
+  name: FormControl<string>;
+  imagePath: FormControl<string>;
+  description: FormControl<string>;
+  ingredients: FormArray<FormGroup<IngredientForm>>;
 }

@@ -1,8 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {FormArray, FormControl, FormGroup, UntypedFormBuilder, Validators} from '@angular/forms';
+import {FormArray, FormGroup, UntypedFormBuilder, Validators} from '@angular/forms';
 import {ActivatedRoute, Params, Router} from '@angular/router';
+
 import {RecipeService} from '../recipe.service';
-import {Recipe} from "../recipe.model";
+import {Recipe, RecipeForm} from "../recipe.model";
+import {IngredientForm} from "../../shared/ingredient.model";
 
 @Component({
   selector: 'app-recipe-edit',
@@ -93,17 +95,4 @@ export class RecipeEditComponent implements OnInit {
   onCancel() {
     this.router.navigate(['../'], {relativeTo: this.route})
   }
-}
-
-interface IngredientForm {
-  name: FormControl<string>;
-  amount: FormControl<number>;
-}
-
-interface RecipeForm {
-  id: FormControl<number>;
-  name: FormControl<string>;
-  imagePath: FormControl<string>;
-  description: FormControl<string>;
-  ingredients: FormArray<FormGroup<IngredientForm>>;
 }
