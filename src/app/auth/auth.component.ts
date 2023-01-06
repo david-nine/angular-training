@@ -1,11 +1,10 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {NgForm} from '@angular/forms';
 import {Router} from '@angular/router';
-import {Observable, of, throwError} from 'rxjs';
-import {catchError, take} from 'rxjs/operators';
+import {take, tap} from 'rxjs/operators';
 import {Store} from "@ngrx/store";
 
-import {AuthResponseData, AuthService} from './auth.service';
+import {AuthService} from './auth.service';
 import {AlertComponent} from "../shared/alert/alert.component";
 import {PlaceholderDirective} from "../shared/placeholder/placeholder.directive";
 import * as AuthActions from './store/auth.acions';
@@ -55,26 +54,17 @@ export class AuthComponent implements OnInit {
     this.isLoading = true;
     this.error = null;
 
-    let observable: Observable<AuthResponseData> = of();
-
     if (this.isLoginMode) {
       this.store.dispatch(new AuthActions.LoginStart({
         email: email,
         password: password
-      }))
+      }));
     } else {
-      observable = this.authService.signup(email, password);
+      this.store.dispatch(new AuthActions.SignupStart({
+        email: email,
+        password: password
+      }));
     }
-    observable.pipe(
-      catchError(error => {
-        this.error = error;
-        this.onShowAlertError();
-        this.isLoading = false;
-        return throwError(error);
-      })
-    ).subscribe(responseData => {
-      this.router.navigate(['/recipes'])
-    });
     form.reset();
   }
 
@@ -85,7 +75,10 @@ export class AuthComponent implements OnInit {
     const componentRef = hostViewContainerRef.createComponent(AlertComponent);
     componentRef.instance.message = this.error;
     componentRef.instance.close.pipe(
-      take(1)
+      take(1),
+      tap(() => {
+        this.store.dispatch(new AuthActions.ClearError());
+      })
     ).subscribe(() => hostViewContainerRef.clear());
   }
 }
