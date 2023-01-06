@@ -1,7 +1,7 @@
 import { HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 
-export const EXTERNAL_URL = "external"; 
+export const EXTERNAL_URL = "external";
 
 export class URLInterceptorService implements HttpInterceptor {
     intercept(req: HttpRequest<any>, next: HttpHandler) {

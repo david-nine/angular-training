@@ -1,5 +1,5 @@
 import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { Subscription } from 'rxjs/Subscription';
 
 @Component({
@@ -13,7 +13,7 @@ export class ControlErrorsComponent implements OnInit, OnChanges, OnDestroy {
   errors: Map<string, string> | any;
 
   @Input()
-  control: FormControl;
+  control: UntypedFormControl;
 
   isValid: boolean = false;
   message: string;

@@ -1,8 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs/Subscription';
-import { Ingredient } from 'src/app/shared/ingredient.model';
-import { ShoppingListService } from '../shopping-list.service';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {FormGroup, UntypedFormBuilder, Validators} from '@angular/forms';
+import {Subscription} from 'rxjs/Subscription';
+import {Store} from "@ngrx/store";
+
+import {Ingredient, IngredientForm} from 'src/app/shared/ingredient.model';
+import * as ShoppingListActions from "../store/shopping-list.actions";
+import * as fromApp from "../../store/app.reducer";
 
 @Component({
   selector: 'app-shopping-edit',
@@ -11,36 +14,38 @@ import { ShoppingListService } from '../shopping-list.service';
 })
 export class ShoppingEditComponent implements OnInit, OnDestroy {
 
-  formGroup: FormGroup;
+  formGroup: FormGroup<IngredientForm>;
   editMode = false;
   editIndex: number;
   subscription: Subscription;
-  
+
   constructor(
-    private shoppingListService: ShoppingListService,
-    private formBuilder: FormBuilder
+    private formBuilder: UntypedFormBuilder,
+    private store: Store<fromApp.AppState>
   ) {
     this.formGroup = this.getFormGroup();
   }
 
   ngOnInit(): void {
-    this.subscription = this.shoppingListService.onEditIngredient.subscribe(index => {
-      this.editIndex = index;
-      this.formGroup.patchValue(this.shoppingListService.getIngredient(index));
-      this.editMode = true;
+    this.subscription = this.store.select('shoppingList').subscribe(state => {
+      if (state.editedIngredientIndex > -1) {
+        this.editMode = true;
+        this.editIndex = state.editedIngredientIndex;
+        this.formGroup.patchValue(state.editedIngredient as Ingredient);
+      }
     })
   }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+    this.store.dispatch(new ShoppingListActions.StopEdit());
   }
 
   getFormGroup() {
-    const formGroup = this.formBuilder.group({
+    return this.formBuilder.group({
       name: [null, Validators.compose([Validators.required])],
       amount: [null, Validators.compose([Validators.required, Validators.min(1)])]
-    })
-    return formGroup;
+    });
   }
 
   onSave() {
@@ -50,12 +55,10 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
     }
     const value = this.formGroup.value;
     if (this.editMode) {
-      this.shoppingListService.update(this.editIndex, value.name, value.amount)
+      this.store.dispatch(new ShoppingListActions.UpdateIngredient(value as Ingredient));
       this.editMode = false;
-    } 
-    else {
-      const newIngredient = new Ingredient(value.name, value.amount);
-      this.shoppingListService.save(newIngredient);
+    } else {
+      this.store.dispatch(new ShoppingListActions.AddIngredient(value as Ingredient));
     }
     this.formGroup.reset();
   }
@@ -63,10 +66,11 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
   onClear() {
     this.editMode = false;
     this.formGroup.reset();
+    this.store.dispatch(new ShoppingListActions.StopEdit());
   }
 
   onDelete() {
+    this.store.dispatch(new ShoppingListActions.DeleteIngredient());
     this.onClear();
-    this.shoppingListService.delete(this.editIndex);
   }
 }

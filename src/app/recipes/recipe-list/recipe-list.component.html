@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-xs-12">
-        <button 
-            class="btn btn-success" 
+        <button
+            class="btn btn-success"
             [routerLink]="[ '/recipes', 'new' ]"
             (click)="onAddRecipe()"
         >New Recipe</button>
@@ -10,8 +10,8 @@
 <hr>
 <div class="row">
     <div class="col-xs-12">
-        <app-recipe-item 
-        *ngFor="let recipeEl of recipes" 
+        <app-recipe-item
+        *ngFor="let recipeEl of (recipes | async)"
         [recipe]="recipeEl"
     ></app-recipe-item>
     </div>
